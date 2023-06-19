@@ -18,20 +18,34 @@ const CreatePersonnel = () => {
   
     const handleSubmit=async(e) => {
       e.preventDefault();
-      if (nomPerso==='' || prenom==='' || email==='' ){   
+      if (nomPerso==='' || prenomPerso==='' || emailPerso==='' || sexePerso==='' || telPerso==='' || diplomePerso==='' || imagePerso==='' ){   
         setError(true)
       }else{
         setError(false)
+        setTimeout(() => {
+          setError(false)
+        },2000)
       }
   
       try {
-        const response = await axios.post('http://localhost:3001/api/user/create', // api/user du serveur est mit ici pour creer le lein entre l'appli et le serveur
-        {nom:nom,email:email,prenom:prenom}
-        );
+        const formData = new FormData();
+        formData.append('nomPerso', nomPerso);
+        formData.append('prenomPerso', prenomPerso);
+        formData.append('emailPerso', emailPerso);
+        formData.append('sexePerso', sexePerso);
+        formData.append('telPerso', telPerso);
+        formData.append('diplomePerso', diplomePerso);
+        formData.append('imagePerso', imagePerso);
+
+        const response = await axios.post('http://localhost:8000/api/personnel/create',formData); // api/user du serveur est mit ici pour creer le lein entre l'appli et le serveur
         setsucces(response.data);
-        setnom('')  
-        setprenom('')       // quand les donnees partent, les champs redeviennent vides
-        setemail('')
+        setNom('')  
+        setPrenom('')   
+        setEmail('')
+        setSexe('')  
+        setTel('')   
+        setDiplome('')
+        setImage('')  
         setTimeout(() => {
           setsucces(false)
         }, 2000);
@@ -77,7 +91,7 @@ const CreatePersonnel = () => {
               <div className="col-md-6">
                 <h2 className='text-center fw-5 fs-3 mb-3'>Créer Un Personnel</h2>
                 {error && <div className='alert alert-danger'>Tous les champs sont obligatoire</div>}
-            <form onSubmit={(e)=>handleSubmit(e)}>
+            <form onSubmit={(e)=>handleSubmit(e)} encType="multipart/form-data">
               <div className='mb-3'>
                 <label className="form-label">Nom :</label>
                 <input type="text" className='form-control' value={nomPerso} onChange={(e) => setNom(e.target.value)} />
@@ -104,7 +118,7 @@ const CreatePersonnel = () => {
               </div>
               <div className='mb-3'>
                 <label className="form-label">Photo :</label>
-                <input type="file" className='form-control' onChange={(e) => setImage(e.target.files[1])} />
+                <input type="file" className='form-control' onChange={(e) => setImage(e.target.files[0])} />
               </div>
               <center><button type="submit" className='btn btn-primary w-50'>Créer</button></center>
             </form>
